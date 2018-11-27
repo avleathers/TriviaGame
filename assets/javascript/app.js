@@ -71,7 +71,7 @@
                 question: "What was the first CD to sell a million copies?",
                 answers: ["Abbey Road", "Kind of Blue", "Joshua Tree", "Rumours"],
                 correctAnswer: "Joshua Tree"
-                //add an image if you want to
+                //image: "/assets/images/JoshuaTree.jpg" 
             },
             {
                 question: "What was the dog's name in The Thin Man movie series?",
@@ -105,18 +105,18 @@
             incorrect: 0,
 
             countdown: function(){
-                game.counter--; //countdown when the game starts
-                $("#counter-number").text(game.counter);
-                if(game.counter === 0) {
+                this.counter--; //countdown when the this starts
+                $("#counter-number").text(this.counter);
+                if(this.counter === 0) {
                     console.log("Time is up!);");
-                    game.timeUp();
+                    this.timeUp();
                 }
 
             },
 
             loadQuestion: function() {
 
-                timer = setInterval(game.countdown, 1000);
+                timer = setInterval(this.countdown.bind(this), 1000);
                 
                 card.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
                 
@@ -127,45 +127,47 @@
             },
 
             nextQuestion: function() {
-                startTimer = countStartNumber;
-                $("#counter-number").text(game.counter);
+                this.counter = this.countStartNumber;
+                $("#counter-number").text(this.counter);
                 this.currentQuestion++;
-                game.loadQuestion();
+                game.loadQuestion(this);
             },
 
             timeUp:  function(){
 
                 clearInterval(timer);
 
-                $("#counter-number").html(game.counter);
+                $("#counter-number").html(this.counter);
 
                 card.html("<h2>Out of Time!</h2>");
                 card.append("<h3>The Correct Answer was: " + questions[this.currentQuestion].correctAnswer);
                 console.log(questions[this.currentQuestion].correctAnswer);
-                if (game.currentQuestion === questions.length - 1) {
-                setTimeout(game.results, 3 * 1000);
+                if (this.currentQuestion === questions.length - 1) {
+                setTimeout(this.results, 3 * 1000);
+                this.loadQuestion();
                 }
                 else {
-                setTimeout(game.nextQuestion, 3 * 1000);
+                setTimeout(this.nextQuestion, 3 * 1000);
+
                 }
             },
 
             results: function() {
 
-                clearInterval(timer);
+                clearInterval(window.timer);
 
                 card.html("<h2>All done, heres how you did!</h2>");
 
-                $("#counter-number").text(game.counter);
+                $("#counter-number").text(this.counter);
 
-                card.append("<h3>Correct Answers: " + game.correct + "</h3>");
-                card.append("<h3>Incorrect Answers: " + game.incorrect + "</h3>");
-                card.append("<h3>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
+                card.append("<h3>Correct Answers: " + this.correct + "</h3>");
+                card.append("<h3>Incorrect Answers: " + this.incorrect + "</h3>");
+                card.append("<h3>Unanswered: " + (questions.length - (this.incorrect + this.correct)) + "</h3>");
                 card.append("<br><button id='start-over'>Start Over?</button>");
             },
 
             clicked: function(e) {
-                clearInterval(timer);
+                clearInterval(window.timer);
                 if ($(e.target).attr("data-name") === questions[this.currentQuestion].correctAnswer) {
                 this.answeredCorrectly();
                 }
@@ -176,18 +178,18 @@
 
             answeredIncorrectly: function() {
 
-                game.incorrect++;
+                this.incorrect++;
 
                 clearInterval(timer);
 
                 card.html("<h2>No!</h2>");
-                card.append("<h3>The Correct Answer was: " + questions[game.currentQuestion].correctAnswer + "</h3>");
+                card.append("<h3>The Correct Answer was: " + questions[this.currentQuestion].correctAnswer + "</h3>");
 
-                if (game.currentQuestion === questions.length - 1) {
-                setTimeout(game.results, 3 * 1000);
+                if (this.currentQuestion === questions.length - 1) {
+                setTimeout(this.results, 3 * 1000);
                 }
                 else {
-                setTimeout(game.nextQuestion, 3 * 1000);
+                setTimeout(this.nextQuestion, 3 * 1000);
                 }
             },
 
@@ -195,21 +197,21 @@
 
                 clearInterval(timer);
 
-                game.correct++;
+                this.correct++;
 
                 card.html("<h2>Correct!</h2>");
             
 
-                if (game.currentQuestion === questions.length - 1) {
-                setTimeout(game.results, 3 * 1000);
+                if (this.currentQuestion === questions.length - 1) {
+                setTimeout(this.results, 3 * 1000);
                 }
                 else {
-                setTimeout(game.nextQuestion, 3 * 1000);
+                setTimeout(this.nextQuestion, 3 * 1000);
                 }
             },
-            reset: function(s){
+            reset: function(){
                 this.currentQuestion = 0;
-                this.counter = 30;
+                this.counter = countStartNumber;
                 this.correct - 0;
                 this.incorect = 0;
                 this.loadQuestion();
@@ -218,12 +220,12 @@
 
             $(document).on("click", "#start-over", game.reset.bind(game));
             $(document).on("click", ".answer-button", function(e){
-                game.clicked(e);
+                game.clicked.bind(game, e)();
             });
 
-            $(document).on("click", "#start", function(){
+            $(document).on("click", "#start", function(e){
                 $("#sub-wrapper").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>")
-                game.loadQuestion();
+                game.loadQuestion.bind(game)();
             })
 
 
