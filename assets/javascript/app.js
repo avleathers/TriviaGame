@@ -158,11 +158,11 @@
 
                 card.html("<h2>All done, heres how you did!</h2>");
 
-                $("#counter-number").text(this.counter);
+                $("#counter-number").text(game.counter);
 
-                card.append("<h3>Correct Answers: " + this.correct + "</h3>");
-                card.append("<h3>Incorrect Answers: " + this.incorrect + "</h3>");
-                card.append("<h3>Unanswered: " + (questions.length - (this.incorrect + this.correct)) + "</h3>");
+                card.append("<h3>Correct Answers: " + game.correct + "</h3>");
+                card.append("<h3>Incorrect Answers: " + game.incorrect + "</h3>");
+                card.append("<h3>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
                 card.append("<br><button id='start-over'>Start Over?</button>");
             },
 
