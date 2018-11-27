@@ -88,7 +88,7 @@
                 answers: ["Abraham Lincoln", "George Washington", "Harry Truman", "John F. Kennedy"],
                 correctAnswer: "Abraham Lincoln"
             },
-            ,
+
             {
                 question: "Who appeared on the cover of the first issue of People Magazine on March 4, 1974?",
                 answers: ["Farrah Fawcett", "Frank Sinatra", "Mia Farrow", "Tom Selleck"],
@@ -101,19 +101,15 @@
             questions: questions,
             currentQuestion: 0,
             counter: countStartNumber,
-            startTimer: start, //30 seconds
             correct: 0, 
             incorrect: 0,
-            unanswered: 0,
 
             countdown: function(){
                 game.counter--; //countdown when the game starts
                 $("#counter-number").text(game.counter);
                 if(game.counter === 0) {
                     console.log("Time is up!);");
-                    this.reset() [
-                        this.counter];
-                    // this.timeUP() Rows 115 and 116 are new logic
+                    game.timeUp();
                 }
 
             },
@@ -123,48 +119,94 @@
                 timer = setInterval(game.countdown, 1000);
                 
                 card.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
-
+                
                 for (var index = 0; index < questions[this.currentQuestion].answers.length; index++){
                     card.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[index] 
                     + "'>" + questions[this.currentQuestion].answers[index] + "</button>");
                 }
             },
-            
+
             nextQuestion: function() {
                 startTimer = countStartNumber;
-                $("#counter-number").text(startTimer);
+                $("#counter-number").text(game.counter);
                 this.currentQuestion++;
                 game.loadQuestion();
             },
 
             timeUp:  function(){
-                if(this.startTimer == 0) {
-                    alert ("Time Up!"); 
-                    clearInterval(this.timer);
-                    } else {
-                     (this.nextQuestion);
-                }
 
+                clearInterval(timer);
+
+                $("#counter-number").html(game.counter);
+
+                card.html("<h2>Out of Time!</h2>");
+                card.append("<h3>The Correct Answer was: " + questions[this.currentQuestion].correctAnswer);
+                console.log(questions[this.currentQuestion].correctAnswer);
+                if (game.currentQuestion === questions.length - 1) {
+                setTimeout(game.results, 3 * 1000);
+                }
+                else {
+                setTimeout(game.nextQuestion, 3 * 1000);
+                }
             },
 
             results: function() {
+
+                clearInterval(timer);
+
+                card.html("<h2>All done, heres how you did!</h2>");
+
+                $("#counter-number").text(game.counter);
+
+                card.append("<h3>Correct Answers: " + game.correct + "</h3>");
+                card.append("<h3>Incorrect Answers: " + game.incorrect + "</h3>");
+                card.append("<h3>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
+                card.append("<br><button id='start-over'>Start Over?</button>");
             },
 
-            clicked:  function(){
-
+            clicked: function(e) {
+                clearInterval(timer);
+                if ($(e.target).attr("data-name") === questions[this.currentQuestion].correctAnswer) {
+                this.answeredCorrectly();
+                }
+                else {
+                this.answeredIncorrectly();
+                }
             },
 
-            answerCorrectly: function(){
-                if(this.questions[this.currentQuestion].correctAnswer == $('#button').val())
-                this.correct++;
+            answeredIncorrectly: function() {
+
+                game.incorrect++;
+
+                clearInterval(timer);
+
+                card.html("<h2>No!</h2>");
+                card.append("<h3>The Correct Answer was: " + questions[game.currentQuestion].correctAnswer + "</h3>");
+
+                if (game.currentQuestion === questions.length - 1) {
+                setTimeout(game.results, 3 * 1000);
+                }
+                else {
+                setTimeout(game.nextQuestion, 3 * 1000);
+                }
             },
+
+            answeredCorrectly: function() {
+
+                clearInterval(timer);
+
+                game.correct++;
+
+                card.html("<h2>Correct!</h2>");
             
-            answerIncorrectly: function(){
-                if(this.questions[this.currentQuestion].incorrectAnswer == $('#button').val())
-                    this.incorrect++;
 
+                if (game.currentQuestion === questions.length - 1) {
+                setTimeout(game.results, 3 * 1000);
+                }
+                else {
+                setTimeout(game.nextQuestion, 3 * 1000);
+                }
             },
-
             reset: function(s){
                 this.currentQuestion = 0;
                 this.counter = 30;
@@ -175,6 +217,9 @@
         }
 
             $(document).on("click", "#start-over", game.reset.bind(game));
+            $(document).on("click", ".answer-button", function(e){
+                game.clicked(e);
+            });
 
             $(document).on("click", "#start", function(){
                 $("#sub-wrapper").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>")
