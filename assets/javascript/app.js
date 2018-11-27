@@ -29,7 +29,10 @@
             // 2.	Incorrect answers
             // 3.	Unanswered questions
 // 3.	Items/Javascript Logic:
-    // a.	Timer
+    // a.   Store data:
+    //  i.  Questions.    
+    //  ii. Correct answers  
+// a.	Timer
     // b.	Logic for determining if:
         // i.	Answer is correct
         // ii.	Answer is incorrect
@@ -55,17 +58,131 @@
             // 3.	Unanswered questions
         // ii.	Display text “All Done!”
 
+        // Document Ready
+        
 
-// Timer
+        // Variables
 
-window.onload = function() {
-    $("#start-button").on("click", timer.start);
-    $("#done-button").on("click", timer.start);
-  };
-  
-// Timer object
+        var card = $("#quiz-area");
+        var countStartNumber = 30;
+        
+        var questions = [
+            {
+                question: "What was the first CD to sell a million copies?",
+                answers: ["Abbey Road", "Kind of Blue", "Joshua Tree", "Rumours"],
+                correctAnswer: "Joshua Tree"
+                //add an image if you want to
+            },
+            {
+                question: "What was the dog's name in The Thin Man movie series?",
+                answers: ["Rascal", "Asta", "Spot", "Astor"],
+                correctAnswer: "Asta"
+            },
+            {
+                question: "Who sang the title song Grease in the 1978 musical motion picture?",
+                answers: ["John Travolta", "Olivia Newton-John", "The Bee Gees", "Franki Valli"],
+                correctAnswer: "Franki Valli"
+            },
+            {
+                question: "Which U.S. President declared that the last Thursday in November should be celebrated as Thanksgiving?",
+                answers: ["Abraham Lincoln", "George Washington", "Harry Truman", "John F. Kennedy"],
+                correctAnswer: "Abraham Lincoln"
+            },
+            ,
+            {
+                question: "Who appeared on the cover of the first issue of People Magazine on March 4, 1974?",
+                answers: ["Farrah Fawcett", "Frank Sinatra", "Mia Farrow", "Tom Selleck"],
+                correctAnswer: "Mia Farrow"
+            }];
 
-var timer = {
-    time: 0,
-    
-}
+        var timer;
+
+        var game = {
+            questions: questions,
+            currentQuestion: 0,
+            counter: countStartNumber,
+            startTimer: start, //30 seconds
+            correct: 0, 
+            incorrect: 0,
+            unanswered: 0,
+
+            countdown: function(){
+                game.counter--; //countdown when the game starts
+                $("#counter-number").text(game.counter);
+                if(game.counter === 0) {
+                    console.log("Time is up!);");
+                    this.reset() [
+                        this.counter];
+                    // this.timeUP() Rows 115 and 116 are new logic
+                }
+
+            },
+
+            loadQuestion: function() {
+
+                timer = setInterval(game.countdown, 1000);
+                
+                card.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
+
+                for (var index = 0; index < questions[this.currentQuestion].answers.length; index++){
+                    card.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[index] 
+                    + "'>" + questions[this.currentQuestion].answers[index] + "</button>");
+                }
+            },
+            
+            nextQuestion: function() {
+                startTimer = countStartNumber;
+                $("#counter-number").text(startTimer);
+                this.currentQuestion++;
+                game.loadQuestion();
+            },
+
+            timeUp:  function(){
+                if(this.startTimer == 0) {
+                    alert ("Time Up!"); 
+                    clearInterval(this.timer);
+                    } else {
+                     (this.nextQuestion);
+                }
+
+            },
+
+            results: function() {
+            },
+
+            clicked:  function(){
+
+            },
+
+            answerCorrectly: function(){
+                if(this.questions[this.currentQuestion].correctAnswer == $('#button').val())
+                this.correct++;
+            },
+            
+            answerIncorrectly: function(){
+                if(this.questions[this.currentQuestion].incorrectAnswer == $('#button').val())
+                    this.incorrect++;
+
+            },
+
+            reset: function(s){
+                this.currentQuestion = 0;
+                this.counter = 30;
+                this.correct - 0;
+                this.incorect = 0;
+                this.loadQuestion();
+            }
+        }
+
+            $(document).on("click", "#start-over", game.reset.bind(game));
+
+            $(document).on("click", "#start", function(){
+                $("#sub-wrapper").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>")
+                game.loadQuestion();
+            })
+
+
+
+
+
+        
