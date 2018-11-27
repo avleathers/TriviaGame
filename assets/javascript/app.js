@@ -127,8 +127,9 @@
             },
 
             nextQuestion: function() {
-                game.counter = game.countStartNumber;
-                $("#counter-number").text(game.counter);
+                game.counter = countStartNumber;
+                console.log(game.counter);
+                $("#counter-number").html(game.counter);
                 game.currentQuestion++;
                 game.loadQuestion(game);
             },
