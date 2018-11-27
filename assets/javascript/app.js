@@ -116,21 +116,21 @@
 
             loadQuestion: function() {
 
-                timer = setInterval(this.countdown.bind(this), 1000);
+                timer = setInterval(game.countdown.bind(game), 1000);
                 
-                card.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
+                card.html("<h2>" + questions[game.currentQuestion].question + "</h2>");
                 
-                for (var index = 0; index < questions[this.currentQuestion].answers.length; index++){
-                    card.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[index] 
-                    + "'>" + questions[this.currentQuestion].answers[index] + "</button>");
+                for (var index = 0; index < questions[game.currentQuestion].answers.length; index++){
+                    card.append("<button class='answer-button' id='button' data-name='" + questions[game.currentQuestion].answers[index] 
+                    + "'>" + questions[game.currentQuestion].answers[index] + "</button>");
                 }
             },
 
             nextQuestion: function() {
-                this.counter = this.countStartNumber;
-                $("#counter-number").text(this.counter);
-                this.currentQuestion++;
-                game.loadQuestion(this);
+                game.counter = game.countStartNumber;
+                $("#counter-number").text(game.counter);
+                game.currentQuestion++;
+                game.loadQuestion(game);
             },
 
             timeUp:  function(){
